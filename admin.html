@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Admin — Access Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#17324D;--deep:#0F2236;--blue:#2F6BFF;--soft:#EAF1FF;--bg:#F7F8FA;--text:#1F2937;--muted:#6B7280;--line:#E5E7EB;--red:#DC2626}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:'Poppins',-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.hide{display:none!important}
+/* login */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,var(--navy),var(--deep))}
+.card{width:100%;max-width:400px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
+.top{background:var(--navy);color:#fff;padding:20px 26px}
+.tag{display:inline-block;font-size:10.5px;letter-spacing:.14em;font-weight:600;background:rgba(255,255,255,.14);padding:4px 10px;border-radius:99px}
+.top h1{font-size:17px;margin:10px 0 0;font-weight:600}
+.pad{padding:22px 26px 26px}
+label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px}
+.fld{position:relative}
+.fld input{width:100%;padding:12px 70px 12px 14px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:14px;outline:none}
+.fld input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--soft)}
+.fld button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--blue);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:6px}
+.err{min-height:20px;margin:8px 0 0;font-size:12.5px;font-weight:600;color:var(--red)}
+.btn{padding:10px 16px;border:0;border-radius:9px;background:var(--blue);color:#fff;font:inherit;font-weight:600;font-size:13px;cursor:pointer}
+.btn:hover:not(:disabled){background:#1E56E0}.btn:disabled{background:#B8C7E8;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.btn.ghost:hover:not(:disabled){background:var(--soft)}
+.btn.wide{width:100%;padding:13px;font-size:14px}
+.shake{animation:sh .35s}@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+/* app */
+header.bar{background:var(--navy);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.bar h1{font-size:16px;margin:0;font-weight:600;flex:1;min-width:180px}
+header.bar .btn{background:rgba(255,255,255,.14)}
+header.bar .btn:hover{background:rgba(255,255,255,.26)!important}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 50px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+.sc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.sc small{display:block;color:var(--muted);font-size:11.5px;font-weight:500;margin-bottom:6px}
+.sc b{font-size:24px;color:var(--navy);font-weight:700}
+.sc b.sm{font-size:16px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.tabs{display:flex;gap:4px;background:#E8ECF3;border-radius:10px;padding:3px}
+.tabs button{border:0;background:none;padding:8px 14px;border-radius:8px;font:inherit;font-weight:600;font-size:12.5px;color:var(--muted);cursor:pointer}
+.tabs button.on{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tools input[type=search]{flex:1;min-width:180px;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;font:inherit;outline:none}
+.tools input[type=search]:focus{border-color:var(--blue)}
+.tw{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:auto;max-height:65vh}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th{position:sticky;top:0;background:#F1F4FA;text-align:left;font-size:11.5px;color:var(--navy);padding:10px 14px;white-space:nowrap}
+td{padding:9px 14px;border-top:1px solid var(--line);white-space:nowrap}
+td.num,th.num{text-align:right}
+tr:hover td{background:#FAFBFF}
+.note{margin:10px 2px;color:var(--muted);font-size:11.5px}
+.msg{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="gate">
+  <form class="card" id="gform" novalidate autocomplete="off">
+    <div class="top"><span class="tag">ADMIN ONLY</span><h1>Access Log</h1></div>
+    <div class="pad">
+      <label class="l" for="key">Admin Key</label>
+      <div class="fld"><input type="password" id="key" placeholder="Masukkan Admin Key" autocomplete="off"><button type="button" id="eye" tabindex="-1">Lihat</button></div>
+      <div class="err" id="gerr" role="alert"></div>
+      <button class="btn wide" id="gbtn" type="submit">Masuk</button>
+    </div>
+  </form>
+</div>
+
+<div id="app" class="hide">
+  <header class="bar"><h1>Access Log — BA Sell Out Dashboard</h1>
+    <button class="btn" id="refresh" type="button">Refresh</button>
+    <button class="btn" id="out" type="button">Logout</button></header>
+  <main>
+    <div class="cards">
+      <div class="sc"><small>Total Unique Users</small><b id="s1">–</b></div>
+      <div class="sc"><small>Total Login / Access</small><b id="s2">–</b></div>
+      <div class="sc"><small>Last Access (WIB)</small><b class="sm" id="s3">–</b></div>
+    </div>
+    <div class="tools">
+      <div class="tabs"><button id="t1" class="on" type="button">Per User</button><button id="t2" type="button">Semua login</button></div>
+      <input type="search" id="q" placeholder="Cari email…" aria-label="Cari email">
+      <button class="btn ghost" id="csv" type="button">Export CSV</button>
+    </div>
+    <div class="tw"><table id="tbl"><thead></thead><tbody></tbody></table><div class="msg hide" id="empty">Tidak ada data.</div></div>
+    <div class="note" id="note"></div>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var SK = 'bad_admin_key_v1', $ = function (i) { return document.getElementById(i); };
+  var DATA = { rows: [], users: [], summary: null, truncated: false }, tab = 1, endpoint = null;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function wib(ts) { return ts ? String(ts).slice(0, 19).replace('T', ' ') + ' WIB' : '–'; }
+  function getKey() { try { return sessionStorage.getItem(SK) || ''; } catch (e) { return ''; } }
+  function setKey(k) { try { if (k) sessionStorage.setItem(SK, k); else sessionStorage.removeItem(SK); } catch (e) {} }
+
+  async function getEndpoint() {
+    if (endpoint !== null) return endpoint;
+    try { var r = await fetch('access-config.json', { cache: 'no-store' }); endpoint = ((await r.json()).endpoint || '').trim(); }
+    catch (e) { endpoint = ''; }
+    return endpoint;
+  }
+  // returns {ok,...}; never throws
+  async function call(adminKey) {
+    var ep = await getEndpoint();
+    if (!ep) return { ok: false, error: 'no_endpoint' };
+    try {
+      var r = await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'list', adminKey: adminKey }) });
+      return await r.json();
+    } catch (e) { return { ok: false, error: 'network' }; }
+  }
+  function errMsg(e) {
+    return { unauthorized: 'Admin key salah', locked: 'Terlalu banyak percobaan salah. Coba lagi dalam 15 menit.',
+      no_endpoint: 'Endpoint belum diisi di access-config.json', network: 'Tidak dapat terhubung ke server log. Coba lagi.' }[e] || ('Gagal memuat data (' + e + ')');
+  }
+  function shake() { var c = $('gform'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); }
+
+  function buildUsers(rows) { // fallback jika server tidak mengirim users
+    var m = {}; rows.slice().reverse().forEach(function (r) {
+      var u = m[r.email] || (m[r.email] = { email: r.email, firstDate: r.date, firstTime: r.time, total: 0, lastAccess: r.timestamp });
+      u.total++; if (r.timestamp > u.lastAccess) u.lastAccess = r.timestamp;
+    });
+    return Object.keys(m).map(function (k) { return m[k]; }).sort(function (a, b) { return a.lastAccess < b.lastAccess ? 1 : -1; });
+  }
+  function apply(res) {
+    DATA.rows = res.rows || [];
+    DATA.users = res.users || buildUsers(DATA.rows);
+    DATA.summary = res.summary || { uniqueUsers: DATA.users.length, totalLogins: DATA.rows.length, lastAccess: DATA.rows[0] && DATA.rows[0].timestamp };
+    DATA.truncated = !!res.truncated;
+    $('s1').textContent = DATA.summary.uniqueUsers;
+    $('s2').textContent = DATA.summary.totalLogins;
+    $('s3').textContent = wib(DATA.summary.lastAccess);
+    render();
+  }
+  function view() {
+    var q = $('q').value.trim().toLowerCase();
+    var f = function (r) { return !q || String(r.email).toLowerCase().indexOf(q) >= 0; };
+    if (tab === 1) return {
+      head: ['Email', 'First Login Date', 'First Login Time', 'Total Login', 'Last Access'],
+      rows: DATA.users.filter(f).map(function (u) { return [u.email, u.firstDate, u.firstTime, u.total, wib(u.lastAccess)]; }), num: 3 };
+    return { head: ['Timestamp', 'Date', 'Time', 'Email', 'Status'],
+      rows: DATA.rows.filter(f).map(function (r) { return [r.timestamp, r.date, r.time, r.email, r.status]; }), num: -1 };
+  }
+  function render() {
+    var v = view();
+    $('tbl').tHead.innerHTML = '<tr>' + v.head.map(function (h, i) { return '<th' + (i === v.num ? ' class="num"' : '') + '>' + esc(h) + '</th>'; }).join('') + '</tr>';
+    $('tbl').tBodies[0].innerHTML = v.rows.map(function (r) {
+      return '<tr>' + r.map(function (c, i) { return '<td' + (i === v.num ? ' class="num"' : '') + '>' + esc(c) + '</td>'; }).join('') + '</tr>';
+    }).join('');
+    $('empty').classList.toggle('hide', v.rows.length > 0);
+    $('note').textContent = (tab === 2 ? v.rows.length + ' login ditampilkan. ' : v.rows.length + ' user ditampilkan. ') +
+      (DATA.truncated ? 'Daftar login dibatasi ke login terbaru; angka total & tabel per user tetap mencakup semuanya. ' : '') +
+      'Email adalah isian pengguna sendiri (belum diverifikasi).';
+    $('t1').classList.toggle('on', tab === 1); $('t2').classList.toggle('on', tab === 2);
+  }
+  function csv() {
+    var v = view();
+    var q = function (c) { c = String(c == null ? '' : c); return /[",\n\r]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c; };
+    var text = '﻿' + [v.head].concat(v.rows).map(function (r) { return r.map(q).join(','); }).join('\r\n') + '\r\n';
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+    a.download = (tab === 1 ? 'users' : 'semua-login') + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+  }
+  function showApp(on) { $('gate').classList.toggle('hide', on); $('app').classList.toggle('hide', !on); }
+  function logout() { setKey(''); DATA = { rows: [], users: [], summary: null }; $('key').value = ''; $('gerr').textContent = ''; showApp(false); }
+
+  async function load(key, fromGate) {
+    var res = await call(key);
+    if (res && res.ok) { setKey(key); apply(res); showApp(true); return true; }
+    var e = (res && res.error) || 'network';
+    if (fromGate || e === 'unauthorized' || e === 'locked') { if (e === 'unauthorized' || e === 'locked') setKey(''); showApp(false); $('gerr').textContent = errMsg(e); shake(); }
+    else alert(errMsg(e));
+    return false;
+  }
+  $('gform').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var k = $('key').value; if (!k) return;
+    $('gbtn').disabled = true; $('gerr').textContent = '';
+    await load(k, true); $('gbtn').disabled = false; $('key').value = '';
+  });
+  $('eye').addEventListener('click', function () { var h = $('key').type === 'password'; $('key').type = h ? 'text' : 'password'; this.textContent = h ? 'Sembunyi' : 'Lihat'; });
+  $('refresh').addEventListener('click', async function () { this.disabled = true; await load(getKey(), false); this.disabled = false; });
+  $('out').addEventListener('click', logout);
+  $('csv').addEventListener('click', csv);
+  $('q').addEventListener('input', render);
+  $('t1').addEventListener('click', function () { tab = 1; render(); });
+  $('t2').addEventListener('click', function () { tab = 2; render(); });
+  if (getKey()) load(getKey(), true);
+})();
+</script>
+</body>
+</html>

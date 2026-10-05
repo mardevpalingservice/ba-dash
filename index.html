@@ -6,30 +6,33 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>BA Sell Out Performance Dashboard — Akses Terbatas</title>
+<script>try{if(sessionStorage.getItem('bad_session_v2'))document.documentElement.className='resume'}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#17324D;--blue:#2F6BFF;--soft:#EAF1FF;--bg:#F7F8FA;--text:#1F2937;--muted:#6B7280;--line:#E5E7EB;--red:#DC2626}
+:root{--navy:#17324D;--deep:#0F2236;--blue:#2F6BFF;--soft:#EAF1FF;--bg:#F7F8FA;--text:#1F2937;--muted:#6B7280;--line:#E5E7EB;--red:#DC2626}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{font-family:'Poppins',-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(160deg,var(--navy) 0%,#0F2236 100%);color:var(--text);display:flex;align-items:center;justify-content:center;padding:20px}
+html,body{height:100%;margin:0;background:var(--deep)}
+body{font-family:'Poppins',-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(160deg,var(--navy) 0%,var(--deep) 100%);color:var(--text);display:flex;align-items:center;justify-content:center;padding:20px}
+html.resume #card{display:none}
+body.shellmode{display:block;padding:0;overflow:hidden;background:var(--deep)}
 .card{width:100%;max-width:460px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
 .top{background:var(--navy);color:#fff;padding:22px 28px 18px}
 .top .tag{display:inline-block;font-size:10.5px;letter-spacing:.14em;font-weight:600;background:rgba(255,255,255,.14);padding:4px 10px;border-radius:99px}
 .top h1{font-size:18px;margin:12px 0 2px;font-weight:600}
-.top p{margin:0;font-size:12px;opacity:.75}
 .body{padding:24px 28px 28px}
 .notice{background:#FEF3F2;border:1px solid #FECDCA;border-radius:10px;padding:13px 14px;font-size:12.2px;line-height:1.55;color:#7A271A}
 .notice b{display:block;margin-bottom:4px;font-size:12.5px;letter-spacing:.02em}
 .agree{display:flex;gap:10px;align-items:flex-start;margin:14px 0 18px;font-size:12.2px;line-height:1.5;color:var(--text);cursor:pointer}
 .agree input{margin-top:3px;width:16px;height:16px;accent-color:var(--blue);flex:none}
-label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px}
-.pw{position:relative}
-.pw input{width:100%;padding:12px 70px 12px 14px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:14px;outline:none;transition:.15s}
-.pw input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--soft)}
-.pw input:disabled{background:#F3F4F6;cursor:not-allowed}
-.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--blue);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:6px}
-.err{min-height:20px;margin:8px 0 0;font-size:12.5px;font-weight:600;color:var(--red)}
+label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin:0 0 6px}
+.fld{position:relative;margin-bottom:14px}
+.fld input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:14px;outline:none;transition:.15s}
+.fld.pw input{padding-right:70px}
+.fld input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--soft)}
+.fld input:disabled{background:#F3F4F6;cursor:not-allowed}
+.fld button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--blue);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:6px}
+.err{min-height:20px;margin:0;font-size:12.5px;font-weight:600;color:var(--red)}
 .go{width:100%;margin-top:6px;padding:13px;border:0;border-radius:10px;background:var(--blue);color:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
 .go:hover:not(:disabled){background:#1E56E0}
 .go:disabled{background:#B8C7E8;cursor:not-allowed}
@@ -37,8 +40,23 @@ label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bo
 .shake{animation:sh .35s}
 @keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .loading{display:none;text-align:center;padding:48px 28px}
-.spin{width:34px;height:34px;border:3px solid var(--soft);border-top-color:var(--blue);border-radius:50%;margin:0 auto 14px;animation:r .8s linear infinite}
+.spin{width:34px;height:34px;border:3px solid rgba(255,255,255,.18);border-top-color:#fff;border-radius:50%;margin:0 auto 14px;animation:r .8s linear infinite}
+.loading .spin{border-color:var(--soft);border-top-color:var(--blue)}
 @keyframes r{to{transform:rotate(360deg)}}
+/* ---- shell ---- */
+#shell{display:none;position:fixed;inset:0;background:var(--deep)}
+body.shellmode #shell{display:block}
+#frames{position:absolute;inset:0}
+iframe.mf{position:absolute;left:0;top:0;width:100%;height:100%;border:0;background:transparent;visibility:hidden;pointer-events:none;z-index:1}
+iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
+#ov{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;color:#fff;font-family:'Poppins',sans-serif;padding:24px;background:var(--deep)}
+#ov.dim{background:rgba(15,34,54,.78)}
+#ov .t{font-size:13px;opacity:.85;max-width:420px;line-height:1.55}
+#ov .b{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#ov button{padding:9px 20px;border-radius:9px;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;font:600 13px 'Poppins',sans-serif;cursor:pointer}
+#ov button.p{background:var(--blue);border-color:var(--blue)}
+#ov.isErr .spin{display:none}
+#ov.isErr .t{color:#FECACA;opacity:1}
 </style>
 </head>
 <body>
@@ -46,17 +64,18 @@ label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bo
   <div class="top">
     <span class="tag">STRICTLY CONFIDENTIAL</span>
     <h1>BA Sell Out Performance Dashboard</h1>
-    
   </div>
-  <div class="loading" id="loading"><div class="spin"></div><div id="loadtxt" style="font-size:13px;color:var(--muted)">Membuka dashboard…</div></div>
-  <form class="body" id="form" autocomplete="off">
+  <div class="loading" id="loading"><div class="spin"></div><div id="loadtxt" style="font-size:13px;color:var(--muted)">Memverifikasi…</div></div>
+  <form class="body" id="form" autocomplete="off" novalidate>
     <div class="notice">
       <b>Pernyataan Kerahasiaan</b>
       Dashboard ini berisi data internal yang sangat rahasia (Sell Out, Target, dan data Beauty Advisor). Dengan melanjutkan, saya menyatakan tidak akan membagikan, menyalin, atau menyebarkan tautan, password, maupun isi dashboard ini kepada siapa pun yang tidak berwenang.
     </div>
     <label class="agree"><input type="checkbox" id="agree"><span>Saya mengerti dan setuju untuk menjaga kerahasiaan data ini.</span></label>
+    <label class="l" for="em">Email</label>
+    <div class="fld"><input type="email" id="em" placeholder="Masukkan email Anda" disabled autocomplete="email" inputmode="email" maxlength="254"></div>
     <label class="l" for="pw">Enter Password</label>
-    <div class="pw">
+    <div class="fld pw">
       <input type="password" id="pw" placeholder="Masukkan password" disabled autocomplete="current-password">
       <button type="button" id="eye" tabindex="-1">Lihat</button>
     </div>
@@ -66,108 +85,243 @@ label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bo
   </form>
 </div>
 
+<div id="shell">
+  <div id="frames"></div>
+  <div id="ov"><div class="spin"></div><div class="t" id="ovtxt"></div><div class="b" id="ovbtn"></div></div>
+  <button id="__bad_logout" type="button" title="Keluar dan kembali ke halaman password"
+    style="position:fixed;top:10px;right:14px;z-index:2147483647;padding:6px 14px;border:1px solid rgba(255,255,255,.55);border-radius:8px;background:rgba(15,34,54,.92);color:#fff;font:600 12px Poppins,Segoe UI,sans-serif;cursor:pointer">Logout</button>
+</div>
+
 <script>
 (function () {
   'use strict';
-  // ---- Config (hanya ini yang mungkin perlu diubah) -------------------------------------
-  var DATA_FILE = 'dashboard.enc';   // file dashboard terenkripsi
-  var ITER = 600000, MAGIC = 'BAD1'; // harus sama dengan tools/encrypt.*
-  var SESSION_KEY = 'bad_session_key_v1';
-  // ---------------------------------------------------------------------------------------
+  var ACCESS_FILE = 'data/access.enc', CONFIG_FILE = 'access-config.json';
+  var ITER = 600000, MAGIC_A = 'BAD2', MAGIC_M = 'BADM';
+  var SKEY = 'bad_session_v2';
+  var LOG_TIMEOUT = 4000, LOAD_TIMEOUT = 180000;
   var $ = function (id) { return document.getElementById(id); };
   var enc = new TextEncoder();
-  var blobPromise = null;
 
-  function prefetch() {
-    if (!blobPromise) blobPromise = fetch(DATA_FILE, { cache: 'no-cache' }).then(function (r) {
-      if (!r.ok) throw new Error('Data file tidak ditemukan (' + r.status + ')');
-      return r.arrayBuffer();
-    });
-    return blobPromise;
-  }
-  function b64e(buf) { var s = ''; var u = new Uint8Array(buf); for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); }
   function b64d(s) { var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+  function magicOf(u) { return String.fromCharCode(u[0], u[1], u[2], u[3]); }
+  function saveSession(s) { try { sessionStorage.setItem(SKEY, JSON.stringify(s)); } catch (e) {} }
+  function clearSession() { try { sessionStorage.removeItem(SKEY); } catch (e) {} }
+  function loadSession() {
+    try {
+      var s = JSON.parse(sessionStorage.getItem(SKEY));
+      if (s && typeof s.dataKey === 'string' && Array.isArray(s.months) && s.months.length) return s;
+    } catch (e) {}
+    return null;
+  }
+  function failErr(kind, msg) { var e = new Error(msg); e.kind = kind; return e; }
 
+  // ------------------------------------------------------------------ crypto
   async function deriveKey(pw, salt) {
     var base = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveKey']);
     return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: ITER, hash: 'SHA-256' }, base,
-      { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
+      { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
   }
-  async function decryptWith(key, packed) {
-    var u = new Uint8Array(packed);
-    var iv = u.slice(20, 32), ct = u.slice(32);
-    var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv, additionalData: enc.encode(MAGIC) }, key, ct); // throws if wrong key
-    var ds = new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip')));
-    return new TextDecoder().decode(await ds.arrayBuffer());
+  async function fetchBuf(url, cache) {
+    var r;
+    try { r = await fetch(url, { cache: cache }); } catch (e) { throw failErr('net', 'Tidak dapat terhubung.'); }
+    if (!r.ok) throw failErr('net', 'File tidak ditemukan (' + r.status + ').');
+    return new Uint8Array(await r.arrayBuffer());
   }
-  function checkMagic(packed) {
-    var u = new Uint8Array(packed);
-    if (String.fromCharCode(u[0], u[1], u[2], u[3]) !== MAGIC) throw new Error('Format data tidak dikenali');
-    return u.slice(4, 20);
-  }
-
-  var LOGOUT = '<button id="__bad_logout" type="button" title="Keluar dan kembali ke halaman password" ' +
-    'style="position:fixed;top:10px;right:14px;z-index:2147483647;padding:6px 14px;border:1px solid rgba(255,255,255,.55);' +
-    'border-radius:8px;background:rgba(15,34,54,.92);color:#fff;font:600 12px Poppins,Segoe UI,sans-serif;cursor:pointer">Logout</button>' +
-    '<script>document.getElementById("__bad_logout").addEventListener("click",function(){try{sessionStorage.removeItem("' + SESSION_KEY + '")}catch(e){}location.replace(location.pathname)});<\/script>';
-
-  function launch(html) {
-    var i = html.lastIndexOf('</body>');
-    html = i >= 0 ? html.slice(0, i) + LOGOUT + html.slice(i) : html + LOGOUT;
-    document.open(); document.write(html); document.close();
+  // returns session object; throws kind 'pw' on wrong password
+  async function openAccess(pw) {
+    var u = await fetchBuf(ACCESS_FILE, 'no-store');
+    if (u.length < 48 || magicOf(u) !== MAGIC_A) throw failErr('format', 'Format data tidak dikenali.');
+    var key = await deriveKey(pw, u.subarray(4, 20)), plain;
+    try { plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(20, 32), additionalData: enc.encode(MAGIC_A) }, key, u.subarray(32)); }
+    catch (e) { throw failErr('pw', 'Incorrect Password'); }
+    var o = JSON.parse(new TextDecoder().decode(plain));
+    if (o.v !== 2 || !o.dataKey || !Array.isArray(o.months) || !o.months.length) throw failErr('format', 'Format data tidak dikenali.');
+    return { dataKey: o.dataKey, logToken: o.logToken, months: o.months, defaultMonth: o.defaultMonth };
   }
 
+  // ------------------------------------------------------------------ access log (fail-open, fire-and-forget)
+  async function sendLog(email, token) {
+    try {
+      var ctl = new AbortController(), timer = setTimeout(function () { ctl.abort(); }, LOG_TIMEOUT);
+      try {
+        var r = await fetch(CONFIG_FILE, { cache: 'no-store', signal: ctl.signal });
+        var ep = r.ok ? ((await r.json()).endpoint || '').trim() : '';
+        if (!ep || !token) return;
+        await fetch(ep, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'log', token: token, email: email }), keepalive: true, signal: ctl.signal });
+      } finally { clearTimeout(timer); }
+    } catch (e) { /* fail-open */ }
+  }
+
+  // ------------------------------------------------------------------ gate UI
+  var agree = $('agree'), em = $('em'), pw = $('pw'), go = $('go'), busy = false;
+  function sync() {
+    em.disabled = pw.disabled = !agree.checked;
+    go.disabled = busy || !agree.checked || !em.value.trim() || !pw.value;
+  }
+  agree.addEventListener('change', function () { sync(); if (agree.checked && !em.value) em.focus(); });
+  em.addEventListener('input', function () { $('err').textContent = ''; sync(); });
+  pw.addEventListener('input', function () { $('err').textContent = ''; sync(); });
+  $('eye').addEventListener('click', function () { var h = pw.type === 'password'; pw.type = h ? 'text' : 'password'; this.textContent = h ? 'Sembunyi' : 'Lihat'; });
   function showLoading(on, txt) {
     $('form').style.display = on ? 'none' : '';
     $('loading').style.display = on ? 'block' : 'none';
     if (txt) $('loadtxt').textContent = txt;
   }
-  function fail(msg) {
-    var e = $('err'); e.textContent = msg;
+  function gateFail(msg) {
+    $('err').textContent = msg;
     var c = $('card'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
   }
-
-  // --- UI wiring
-  var agree = $('agree'), pw = $('pw'), go = $('go');
-  function sync() { pw.disabled = !agree.checked; go.disabled = !agree.checked || !pw.value; if (agree.checked && !pw.value) pw.focus(); }
-  agree.addEventListener('change', sync); pw.addEventListener('input', function () { $('err').textContent = ''; sync(); });
-  $('eye').addEventListener('click', function () { var h = pw.type === 'password'; pw.type = h ? 'text' : 'password'; this.textContent = h ? 'Sembunyi' : 'Lihat'; });
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   $('form').addEventListener('submit', async function (ev) {
     ev.preventDefault();
-    if (!agree.checked || !pw.value) return;
-    go.disabled = true; $('err').textContent = '';
+    if (busy || !agree.checked) return;
+    var email = em.value.trim().toLowerCase();
+    if (!email || !pw.value) return;
+    if (email.length > 254 || !EMAIL_RE.test(email)) { gateFail('Email tidak valid'); em.focus(); return; }
+    busy = true; go.disabled = true; $('err').textContent = '';
     showLoading(true, 'Memverifikasi password…');
-    try {
-      var packed = await prefetch();
-      var salt = checkMagic(packed);
-      var key = await deriveKey(pw.value, salt);
-      var html;
-      try { html = await decryptWith(key, packed); }
-      catch (e) { showLoading(false); pw.value = ''; sync(); fail('Incorrect Password'); pw.focus(); return; }
-      try { sessionStorage.setItem(SESSION_KEY, b64e(await crypto.subtle.exportKey('raw', key))); } catch (e) {}
-      showLoading(true, 'Membuka dashboard…');
-      launch(html);
-    } catch (e) {
-      showLoading(false); sync();
-      fail(String(e.message || e).indexOf('Data file') === 0 ? e.message : 'Tidak dapat memuat dashboard. Coba muat ulang halaman.');
+    var S;
+    try { S = await openAccess(pw.value); }
+    catch (e) {
+      busy = false; showLoading(false);
+      if (e.kind === 'pw') { pw.value = ''; sync(); gateFail('Incorrect Password'); pw.focus(); }
+      else { sync(); gateFail(e.kind === 'format' ? e.message : 'Tidak dapat memuat dashboard. Coba muat ulang halaman.'); }
+      return;
     }
+    pw.value = ''; busy = false;
+    S.email = email;
+    S.currentMonth = S.months.some(function (m) { return m.id === S.defaultMonth; }) ? S.defaultMonth : S.months[S.months.length - 1].id;
+    saveSession(S);
+    sendLog(email, S.logToken);          // tidak di-await: tidak pernah memblokir login
+    openShell(S);
   });
 
-  // --- Auto-login selama sesi browser masih aktif
-  (async function () {
-    var saved = null; try { saved = sessionStorage.getItem(SESSION_KEY); } catch (e) {}
-    if (!saved) { prefetch().catch(function () {}); return; }
-    showLoading(true, 'Membuka dashboard…');
-    try {
-      var packed = await prefetch(); checkMagic(packed);
-      var key = await crypto.subtle.importKey('raw', b64d(saved), 'AES-GCM', false, ['decrypt']);
-      launch(await decryptWith(key, packed));
-    } catch (e) {
-      try { sessionStorage.removeItem(SESSION_KEY); } catch (x) {}
-      showLoading(false);
+  // ------------------------------------------------------------------ shell
+  var frames = {}, shown = null, switching = false, dataKeyObj = null, S0 = null, monthById = {};
+  var BAD = window.__BAD = { months: [], current: null, email: '', switchMonth: switchMonth, monthOf: monthOf };
+
+  function monthOf(win) {
+    for (var id in frames) if (frames[id].el && frames[id].el.contentWindow === win) return id;
+    return null;
+  }
+  function overlay(mode, text, buttons) {
+    var ov = $('ov');
+    if (!mode) { ov.style.display = 'none'; return; }
+    ov.className = (shown ? 'dim ' : '') + (mode === 'err' ? 'isErr' : '');
+    ov.style.display = 'flex';
+    $('ovtxt').textContent = text;
+    var box = $('ovbtn'); box.textContent = '';
+    (buttons || []).forEach(function (b) {
+      var x = document.createElement('button'); x.type = 'button'; x.textContent = b.t; if (b.p) x.className = 'p';
+      x.addEventListener('click', b.f); box.appendChild(x);
+    });
+  }
+  function doLogout() {
+    clearSession();
+    for (var id in frames) { try { URL.revokeObjectURL(frames[id].url); } catch (e) {} }
+    location.reload();
+  }
+  $('__bad_logout').addEventListener('click', doLogout);
+
+  async function getDataKey() {
+    if (!dataKeyObj) dataKeyObj = await crypto.subtle.importKey('raw', b64d(S0.dataKey), 'AES-GCM', false, ['decrypt']);
+    return dataKeyObj;
+  }
+  function loadMonth(id) {
+    if (frames[id]) return frames[id].promise;
+    var m = monthById[id], rec = frames[id] = { id: id, el: null, url: null };
+    rec.promise = (async function () {
+      var u = await fetchBuf(m.file, 'no-cache');
+      if (u.length < 32 || magicOf(u) !== MAGIC_M) throw failErr('decrypt', 'Format file bulan tidak dikenali.');
+      var plain;
+      try { plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(4, 16), additionalData: enc.encode(MAGIC_M) }, await getDataKey(), u.subarray(16)); }
+      catch (e) { throw failErr('decrypt', 'Tidak dapat membuka data bulan ini.'); }
+      var blob;
+      try { blob = await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip'))).blob(); }
+      catch (e) { throw failErr('decrypt', 'Data bulan rusak.'); }
+      plain = null;
+      rec.url = URL.createObjectURL(new Blob([blob], { type: 'text/html;charset=utf-8' }));
+      var el = rec.el = document.createElement('iframe');
+      el.className = 'mf'; el.title = m.label; el.setAttribute('aria-hidden', 'true');
+      await new Promise(function (res, rej) {
+        var t = setTimeout(function () { rej(failErr('net', 'Waktu habis saat membuka halaman.')); }, LOAD_TIMEOUT);
+        el.addEventListener('load', function () { clearTimeout(t); res(); }, { once: true });
+        el.src = rec.url;                       // src sebelum append: tidak ada load about:blank
+        $('frames').appendChild(el);
+      });
+    })().catch(function (e) {
+      try { if (rec.el) rec.el.remove(); if (rec.url) URL.revokeObjectURL(rec.url); } catch (x) {}
+      delete frames[id]; throw e;
+    });
+    return rec.promise;
+  }
+  function pokeShown() {
+    var rec = shown && frames[shown];
+    if (rec && rec.el.contentWindow && typeof rec.el.contentWindow.__BAD_onShow === 'function') {
+      try { rec.el.contentWindow.__BAD_onShow(shown); } catch (e) {}
     }
-  })();
+  }
+  function show(id) {
+    for (var k in frames) if (frames[k].el) { var on = k === id; frames[k].el.classList.toggle('on', on); frames[k].el.setAttribute('aria-hidden', on ? 'false' : 'true'); }
+    shown = BAD.current = id;
+    S0.currentMonth = id; saveSession(S0);
+    var w = frames[id].el.contentWindow;
+    try { w.dispatchEvent(new Event('resize')); } catch (e) {}
+    pokeShown();
+  }
+  function errText(e, label) {
+    if (e && e.kind === 'decrypt') return 'Sesi tidak valid atau data telah diperbarui. Silakan login ulang.';
+    return 'Gagal memuat ' + label + '. Periksa koneksi Anda lalu coba lagi.';
+  }
+  async function switchMonth(id, state) {
+    if (!monthById.hasOwnProperty(id) || typeof id !== 'string') return false;
+    if (switching) { pokeShown(); return false; }
+    if (id === shown) { pokeShown(); return true; }
+    switching = true;
+    var label = monthById[id].label;
+    try {
+      overlay('load', 'Memuat ' + label + '…');
+      await loadMonth(id);
+      var w = frames[id].el.contentWindow;
+      if (typeof w.__BAD_applyState === 'function') { try { w.__BAD_applyState(state); } catch (e) { console.error('applyState', e); } }
+      show(id);
+      overlay(null);
+      return true;
+    } catch (e) {
+      var btns = [{ t: 'Coba lagi', p: true, f: function () { switching = false; switchMonth(id, state); } }];
+      btns.push(e && e.kind === 'decrypt' ? { t: 'Login ulang', f: doLogout } : { t: 'Batal', f: function () { overlay(null); } });
+      overlay('err', errText(e, label), btns);
+      return false;
+    } finally { switching = false; pokeShown(); }
+  }
+  async function initialMonth() {
+    var id = monthById.hasOwnProperty(S0.currentMonth) ? S0.currentMonth : S0.defaultMonth;
+    if (!monthById.hasOwnProperty(id)) id = S0.months[S0.months.length - 1].id;
+    overlay('load', 'Membuka dashboard…');
+    try { await loadMonth(id); show(id); overlay(null); }
+    catch (e) {
+      overlay('err', errText(e, monthById[id].label), [
+        { t: 'Coba lagi', p: true, f: initialMonth },
+        { t: 'Login ulang', f: doLogout }]);
+    }
+  }
+  function openShell(S) {
+    S0 = S; monthById = {};
+    S.months.forEach(function (m) { monthById[m.id] = m; });
+    BAD.months = S.months.map(function (m) { return { id: m.id, label: m.label }; });
+    BAD.email = S.email || '';
+    document.documentElement.className = 'shellmode';
+    document.body.className = 'shellmode';
+    $('card').remove();
+    initialMonth();
+  }
+
+  // ------------------------------------------------------------------ auto-resume (tanpa log, tanpa password)
+  var saved = loadSession();
+  if (saved) openShell(saved);
+  else { clearSession(); document.documentElement.className = ''; }
 })();
 </script>
 </body>
