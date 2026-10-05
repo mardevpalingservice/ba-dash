@@ -173,6 +173,7 @@ iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
     var c = $('card'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
   }
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var ALLOWED_DOMAIN = '@paracorpgroup.com'; // hanya email perusahaan yang boleh masuk
 
   $('form').addEventListener('submit', async function (ev) {
     ev.preventDefault();
@@ -191,6 +192,12 @@ iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
       return;
     }
     pw.value = ''; busy = false;
+    if (email.slice(-ALLOWED_DOMAIN.length) !== ALLOWED_DOMAIN) {
+      // password benar tapi email bukan perusahaan: dicatat (status Blocked oleh server), dashboard TIDAK dibuka
+      sendLog(email, S.logToken); S = null;
+      showLoading(false); sync(); gateFail('Akses ditolak: gunakan email perusahaan (' + ALLOWED_DOMAIN + ')'); em.focus();
+      return;
+    }
     S.email = email;
     S.currentMonth = S.months.some(function (m) { return m.id === S.defaultMonth; }) ? S.defaultMonth : S.months[S.months.length - 1].id;
     saveSession(S);

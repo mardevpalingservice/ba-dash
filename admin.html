@@ -82,6 +82,7 @@ tr:hover td{background:#FAFBFF}
       <div class="sc"><small>Total Unique Users</small><b id="s1">–</b></div>
       <div class="sc"><small>Total Login / Access</small><b id="s2">–</b></div>
       <div class="sc"><small>Last Access (WIB)</small><b class="sm" id="s3">–</b></div>
+      <div class="sc"><small>Ditolak (email non-perusahaan)</small><b id="s4">–</b></div>
     </div>
     <div class="tools">
       <div class="tabs"><button id="t1" class="on" type="button">Per User</button><button id="t2" type="button">Semua login</button></div>
@@ -140,6 +141,7 @@ tr:hover td{background:#FAFBFF}
     $('s1').textContent = DATA.summary.uniqueUsers;
     $('s2').textContent = DATA.summary.totalLogins;
     $('s3').textContent = wib(DATA.summary.lastAccess);
+    $('s4').textContent = DATA.summary.blockedAttempts || 0;
     render();
   }
   function view() {
