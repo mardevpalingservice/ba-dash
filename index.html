@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>BA Sell Out Performance Dashboard — Akses Terbatas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#17324D;--blue:#2F6BFF;--soft:#EAF1FF;--bg:#F7F8FA;--text:#1F2937;--muted:#6B7280;--line:#E5E7EB;--red:#DC2626}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:'Poppins',-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(160deg,var(--navy) 0%,#0F2236 100%);color:var(--text);display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:100%;max-width:460px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
+.top{background:var(--navy);color:#fff;padding:22px 28px 18px}
+.top .tag{display:inline-block;font-size:10.5px;letter-spacing:.14em;font-weight:600;background:rgba(255,255,255,.14);padding:4px 10px;border-radius:99px}
+.top h1{font-size:18px;margin:12px 0 2px;font-weight:600}
+.top p{margin:0;font-size:12px;opacity:.75}
+.body{padding:24px 28px 28px}
+.notice{background:#FEF3F2;border:1px solid #FECDCA;border-radius:10px;padding:13px 14px;font-size:12.2px;line-height:1.55;color:#7A271A}
+.notice b{display:block;margin-bottom:4px;font-size:12.5px;letter-spacing:.02em}
+.agree{display:flex;gap:10px;align-items:flex-start;margin:14px 0 18px;font-size:12.2px;line-height:1.5;color:var(--text);cursor:pointer}
+.agree input{margin-top:3px;width:16px;height:16px;accent-color:var(--blue);flex:none}
+label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px}
+.pw{position:relative}
+.pw input{width:100%;padding:12px 70px 12px 14px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:14px;outline:none;transition:.15s}
+.pw input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--soft)}
+.pw input:disabled{background:#F3F4F6;cursor:not-allowed}
+.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--blue);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:6px}
+.err{min-height:20px;margin:8px 0 0;font-size:12.5px;font-weight:600;color:var(--red)}
+.go{width:100%;margin-top:6px;padding:13px;border:0;border-radius:10px;background:var(--blue);color:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+.go:hover:not(:disabled){background:#1E56E0}
+.go:disabled{background:#B8C7E8;cursor:not-allowed}
+.foot{margin-top:16px;text-align:center;font-size:11px;color:var(--muted)}
+.shake{animation:sh .35s}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.loading{display:none;text-align:center;padding:48px 28px}
+.spin{width:34px;height:34px;border:3px solid var(--soft);border-top-color:var(--blue);border-radius:50%;margin:0 auto 14px;animation:r .8s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="top">
+    <span class="tag">STRICTLY CONFIDENTIAL</span>
+    <h1>BA Sell Out Performance Dashboard</h1>
+    <p>Paragon — Akses terbatas untuk pihak yang berwenang</p>
+  </div>
+  <div class="loading" id="loading"><div class="spin"></div><div id="loadtxt" style="font-size:13px;color:var(--muted)">Membuka dashboard…</div></div>
+  <form class="body" id="form" autocomplete="off">
+    <div class="notice">
+      <b>Pernyataan Kerahasiaan</b>
+      Dashboard ini berisi data internal yang sangat rahasia (Sell Out, Target, dan data Beauty Advisor). Dengan melanjutkan, saya menyatakan tidak akan membagikan, menyalin, atau menyebarkan tautan, password, maupun isi dashboard ini kepada siapa pun yang tidak berwenang.
+    </div>
+    <label class="agree"><input type="checkbox" id="agree"><span>Saya mengerti dan setuju untuk menjaga kerahasiaan data ini.</span></label>
+    <label class="l" for="pw">Enter Password</label>
+    <div class="pw">
+      <input type="password" id="pw" placeholder="Masukkan password" disabled autocomplete="current-password">
+      <button type="button" id="eye" tabindex="-1">Lihat</button>
+    </div>
+    <div class="err" id="err" role="alert"></div>
+    <button class="go" id="go" type="submit" disabled>Masuk ke Dashboard</button>
+    <div class="foot">Sesi berakhir saat tab/browser ditutup atau saat menekan Logout.</div>
+  </form>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // ---- Config (hanya ini yang mungkin perlu diubah) -------------------------------------
+  var DATA_FILE = 'dashboard.enc';   // file dashboard terenkripsi
+  var ITER = 600000, MAGIC = 'BAD1'; // harus sama dengan tools/encrypt.*
+  var SESSION_KEY = 'bad_session_key_v1';
+  // ---------------------------------------------------------------------------------------
+  var $ = function (id) { return document.getElementById(id); };
+  var enc = new TextEncoder();
+  var blobPromise = null;
+
+  function prefetch() {
+    if (!blobPromise) blobPromise = fetch(DATA_FILE, { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error('Data file tidak ditemukan (' + r.status + ')');
+      return r.arrayBuffer();
+    });
+    return blobPromise;
+  }
+  function b64e(buf) { var s = ''; var u = new Uint8Array(buf); for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); }
+  function b64d(s) { var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+
+  async function deriveKey(pw, salt) {
+    var base = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: ITER, hash: 'SHA-256' }, base,
+      { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
+  }
+  async function decryptWith(key, packed) {
+    var u = new Uint8Array(packed);
+    var iv = u.slice(20, 32), ct = u.slice(32);
+    var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv, additionalData: enc.encode(MAGIC) }, key, ct); // throws if wrong key
+    var ds = new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip')));
+    return new TextDecoder().decode(await ds.arrayBuffer());
+  }
+  function checkMagic(packed) {
+    var u = new Uint8Array(packed);
+    if (String.fromCharCode(u[0], u[1], u[2], u[3]) !== MAGIC) throw new Error('Format data tidak dikenali');
+    return u.slice(4, 20);
+  }
+
+  var LOGOUT = '<button id="__bad_logout" type="button" title="Keluar dan kembali ke halaman password" ' +
+    'style="position:fixed;top:10px;right:14px;z-index:2147483647;padding:6px 14px;border:1px solid rgba(255,255,255,.55);' +
+    'border-radius:8px;background:rgba(15,34,54,.92);color:#fff;font:600 12px Poppins,Segoe UI,sans-serif;cursor:pointer">Logout</button>' +
+    '<script>document.getElementById("__bad_logout").addEventListener("click",function(){try{sessionStorage.removeItem("' + SESSION_KEY + '")}catch(e){}location.replace(location.pathname)});<\/script>';
+
+  function launch(html) {
+    var i = html.lastIndexOf('</body>');
+    html = i >= 0 ? html.slice(0, i) + LOGOUT + html.slice(i) : html + LOGOUT;
+    document.open(); document.write(html); document.close();
+  }
+
+  function showLoading(on, txt) {
+    $('form').style.display = on ? 'none' : '';
+    $('loading').style.display = on ? 'block' : 'none';
+    if (txt) $('loadtxt').textContent = txt;
+  }
+  function fail(msg) {
+    var e = $('err'); e.textContent = msg;
+    var c = $('card'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+  }
+
+  // --- UI wiring
+  var agree = $('agree'), pw = $('pw'), go = $('go');
+  function sync() { pw.disabled = !agree.checked; go.disabled = !agree.checked || !pw.value; if (agree.checked && !pw.value) pw.focus(); }
+  agree.addEventListener('change', sync); pw.addEventListener('input', function () { $('err').textContent = ''; sync(); });
+  $('eye').addEventListener('click', function () { var h = pw.type === 'password'; pw.type = h ? 'text' : 'password'; this.textContent = h ? 'Sembunyi' : 'Lihat'; });
+
+  $('form').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    if (!agree.checked || !pw.value) return;
+    go.disabled = true; $('err').textContent = '';
+    showLoading(true, 'Memverifikasi password…');
+    try {
+      var packed = await prefetch();
+      var salt = checkMagic(packed);
+      var key = await deriveKey(pw.value, salt);
+      var html;
+      try { html = await decryptWith(key, packed); }
+      catch (e) { showLoading(false); pw.value = ''; sync(); fail('Incorrect Password'); pw.focus(); return; }
+      try { sessionStorage.setItem(SESSION_KEY, b64e(await crypto.subtle.exportKey('raw', key))); } catch (e) {}
+      showLoading(true, 'Membuka dashboard…');
+      launch(html);
+    } catch (e) {
+      showLoading(false); sync();
+      fail(String(e.message || e).indexOf('Data file') === 0 ? e.message : 'Tidak dapat memuat dashboard. Coba muat ulang halaman.');
+    }
+  });
+
+  // --- Auto-login selama sesi browser masih aktif
+  (async function () {
+    var saved = null; try { saved = sessionStorage.getItem(SESSION_KEY); } catch (e) {}
+    if (!saved) { prefetch().catch(function () {}); return; }
+    showLoading(true, 'Membuka dashboard…');
+    try {
+      var packed = await prefetch(); checkMagic(packed);
+      var key = await crypto.subtle.importKey('raw', b64d(saved), 'AES-GCM', false, ['decrypt']);
+      launch(await decryptWith(key, packed));
+    } catch (e) {
+      try { sessionStorage.removeItem(SESSION_KEY); } catch (x) {}
+      showLoading(false);
+    }
+  })();
+})();
+</script>
+</body>
+</html>
