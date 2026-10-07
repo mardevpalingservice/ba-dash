@@ -23,6 +23,7 @@ body.shellmode{display:block;padding:0;overflow:hidden;background:var(--deep)}
 .body{padding:24px 28px 28px}
 .notice{background:#FEF3F2;border:1px solid #FECDCA;border-radius:10px;padding:13px 14px;font-size:12.2px;line-height:1.55;color:#7A271A}
 .notice b{display:block;margin-bottom:4px;font-size:12.5px;letter-spacing:.02em}
+.notice p{margin:0 0 7px}.notice p:last-child{margin-bottom:0}
 .agree{display:flex;gap:10px;align-items:flex-start;margin:14px 0 18px;font-size:12.2px;line-height:1.5;color:var(--text);cursor:pointer}
 .agree input{margin-top:3px;width:16px;height:16px;accent-color:var(--blue);flex:none}
 label.l{display:block;font-size:12px;font-weight:600;color:var(--navy);margin:0 0 6px}
@@ -69,7 +70,10 @@ iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
   <form class="body" id="form" autocomplete="off" novalidate>
     <div class="notice">
       <b>Pernyataan Kerahasiaan</b>
-      Dashboard ini berisi data internal yang sangat rahasia (Sell Out, Target, dan data Beauty Advisor). Dengan melanjutkan, saya menyatakan tidak akan membagikan, menyalin, atau menyebarkan tautan, password, maupun isi dashboard ini kepada siapa pun yang tidak berwenang.
+      <p>Dashboard ini berisi data internal dan bersifat <b style="display:inline;margin:0;font-size:inherit">sangat rahasia</b>, termasuk data Sell Out, Target, serta data Beauty Advisor (BA).</p>
+      <p>Akses dashboard hanya diperbolehkan untuk <b style="display:inline;margin:0;font-size:inherit">GACOR, RSBL, SEL, dan Commercial Team</b>.</p>
+      <p>Dashboard ini tidak diperbolehkan untuk dibagikan kepada T&amp;DS maupun Admin. Apabila terdapat informasi yang perlu disampaikan kepada pihak tersebut, informasi hanya boleh diberikan dalam bentuk capture/screenshot yang relevan, tanpa membagikan link maupun akses dashboard.</p>
+      <p>Dengan melanjutkan akses, saya menyatakan bahwa saya tidak akan membagikan, meneruskan, menyalin, atau menyebarluaskan link, password, maupun isi dashboard kepada pihak mana pun yang tidak memiliki kewenangan akses.</p>
     </div>
     <label class="agree"><input type="checkbox" id="agree"><span>Saya mengerti dan setuju untuk menjaga kerahasiaan data ini.</span></label>
     <label class="l" for="em">Email</label>
