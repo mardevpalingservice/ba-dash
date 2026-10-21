@@ -229,6 +229,36 @@ iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
       x.addEventListener('click', b.f); box.appendChild(x);
     });
   }
+  // ------------------------------------------------------------------ auto-logout saat tidak aktif (20 menit)
+  var IDLE_MS = 20 * 60 * 1000, WARN_MS = 60 * 1000, NOTE_KEY = 'bad_idle_note';
+  var lastAct = Date.now(), idleTick = null, warnEl = null;
+  function markAct() { lastAct = Date.now(); }
+  function hookWin(w) {
+    try { ['mousemove', 'mousedown', 'keydown', 'wheel', 'scroll', 'touchstart', 'click'].forEach(function (ev) { w.addEventListener(ev, markAct, { passive: true, capture: true }); }); } catch (e) {}
+  }
+  function hideWarn() { if (warnEl) { warnEl.remove(); warnEl = null; } }
+  function showWarn() {
+    if (warnEl) return;
+    warnEl = document.createElement('div');
+    warnEl.style.cssText = 'position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:2147483646;background:#0F2236;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:12px;padding:14px 20px;font:600 13px Poppins,Segoe UI,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.45);display:flex;gap:14px;align-items:center';
+    var tx = document.createElement('span'); tx.textContent = 'Sesi akan berakhir karena tidak ada aktivitas.';
+    var bt = document.createElement('button'); bt.type = 'button'; bt.textContent = 'Tetap masuk';
+    bt.style.cssText = 'background:#2F6BFF;color:#fff;border:0;border-radius:8px;padding:7px 14px;font:600 12px Poppins,Segoe UI,sans-serif;cursor:pointer';
+    bt.addEventListener('click', function () { markAct(); hideWarn(); });
+    warnEl.appendChild(tx); warnEl.appendChild(bt); document.body.appendChild(warnEl);
+  }
+  function checkIdle() {
+    var idle = Date.now() - lastAct;
+    if (idle >= IDLE_MS) { try { sessionStorage.setItem(NOTE_KEY, '1'); } catch (e) {} doLogout(); return; }
+    if (idle >= IDLE_MS - WARN_MS) showWarn(); else hideWarn();
+  }
+  function startIdleWatch() {
+    if (idleTick) return;
+    lastAct = Date.now(); hookWin(window);
+    idleTick = setInterval(checkIdle, 5000);
+    // tab kembali aktif / komputer bangun dari tidur: periksa segera (tanpa menghitungnya sebagai aktivitas)
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) checkIdle(); });
+  }
   function doLogout() {
     clearSession();
     for (var id in frames) { try { URL.revokeObjectURL(frames[id].url); } catch (e) {} }
@@ -258,7 +288,7 @@ iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
       el.className = 'mf'; el.title = m.label; el.setAttribute('aria-hidden', 'true');
       await new Promise(function (res, rej) {
         var t = setTimeout(function () { rej(failErr('net', 'Waktu habis saat membuka halaman.')); }, LOAD_TIMEOUT);
-        el.addEventListener('load', function () { clearTimeout(t); res(); }, { once: true });
+        el.addEventListener('load', function () { clearTimeout(t); try { hookWin(el.contentWindow); } catch (e) {} res(); }, { once: true });
         el.src = rec.url;                       // src sebelum append: tidak ada load about:blank
         $('frames').appendChild(el);
       });
@@ -326,13 +356,17 @@ iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
     document.documentElement.className = 'shellmode';
     document.body.className = 'shellmode';
     $('card').remove();
+    startIdleWatch();
     initialMonth();
   }
 
   // ------------------------------------------------------------------ auto-resume (tanpa log, tanpa password)
   var saved = loadSession();
   if (saved) openShell(saved);
-  else { clearSession(); document.documentElement.className = ''; }
+  else {
+    clearSession(); document.documentElement.className = '';
+    try { if (sessionStorage.getItem(NOTE_KEY)) { sessionStorage.removeItem(NOTE_KEY); $('err').textContent = 'Sesi berakhir, silakan login kembali.'; } } catch (e) {}
+  }
 })();
 </script>
 </body>
