@@ -231,8 +231,8 @@ iframe.mf.on{visibility:visible;pointer-events:auto;z-index:2}
       x.addEventListener('click', b.f); box.appendChild(x);
     });
   }
-  // ------------------------------------------------------------------ auto-logout saat tidak aktif (20 menit)
-  var IDLE_MS = 20 * 60 * 1000, WARN_MS = 60 * 1000, NOTE_KEY = 'bad_idle_note';
+  // ------------------------------------------------------------------ auto-logout saat tidak aktif (45 menit)
+  var IDLE_MS = 45 * 60 * 1000, WARN_MS = 60 * 1000, NOTE_KEY = 'bad_idle_note';
   var lastAct = Date.now(), idleTick = null, warnEl = null;
   function markAct() { lastAct = Date.now(); }
   function hookWin(w) {
